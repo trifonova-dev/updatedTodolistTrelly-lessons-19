@@ -1,20 +1,35 @@
-import { useGetTodolistsQuery } from "@/features/todolists/api/todolistsApi"
+import {useGetTodolistsQuery} from "@/features/todolists/api/todolistsApi"
 import Grid from "@mui/material/Grid"
 import Paper from "@mui/material/Paper"
-import { TodolistItem } from "./TodolistItem/TodolistItem"
+import {TodolistItem} from "./TodolistItem/TodolistItem"
+import {TodolistSkeleton} from "@/features/todolists/ui/Todolists/TodolistSkeleton/TodolistSkeleton";
+import Box from "@mui/material/Box";
+import {containerSx} from "@/common/styles";
 
 export const Todolists = () => {
-  const { data: todolists } = useGetTodolistsQuery()
+    const {data: todolists, isLoading} = useGetTodolistsQuery()
 
-  return (
-    <>
-      {todolists?.map((todolist) => (
-        <Grid key={todolist.id}>
-          <Paper sx={{ p: "0 20px 20px 20px" }}>
-            <TodolistItem todolist={todolist} />
-          </Paper>
-        </Grid>
-      ))}
-    </>
-  )
+    if (isLoading) {
+        return (
+            <Box sx={containerSx} style={{gap: "32px"}}>
+                {Array(2)
+                    .fill(null)
+                    .map((_, id) => (
+                        <TodolistSkeleton key={id}/>
+                    ))}
+            </Box>
+        )
+    }
+
+    return (
+        <>
+            {todolists?.map((todolist) => (
+                <Grid key={todolist.id}>
+                    <Paper sx={{p: "0 20px 20px 20px"}}>
+                        <TodolistItem todolist={todolist}/>
+                    </Paper>
+                </Grid>
+            ))}
+        </>
+    )
 }
